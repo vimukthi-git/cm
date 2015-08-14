@@ -24,8 +24,7 @@ let ColourCard = React.createClass({
         if(this.props.autofocus){
             zDepth = 4;
         }
-        return {flipped:model.flipped, side:side, colour:model.colour, zDepth: zDepth,
-            autofocus:this.props.autofocus};
+        return {flipped:model.flipped, side:side, colour:model.colour, zDepth: zDepth};
     },
 
     tick: function() {
@@ -93,7 +92,12 @@ let ColourCard = React.createClass({
     _onChange: function(){
         let model = ColourCardStore.get(this.props.index);
         this.state.colour = model.colour;
-        this._adjustState(model.flipped);
+        if(this.props.index === 0){
+            this._adjustStateWithFocus(model.flipped);
+        } else {
+            this._adjustState(model.flipped);
+        }
+
     },
 
     _onWon: function(){
@@ -119,10 +123,10 @@ let ColourCard = React.createClass({
     _onFocus: function(event){
         if(event.focusedElementId === this.props.index){
             this.refs['card-' + this.props.index].getDOMNode().focus();
-            this.setState({zDepth:4, autofocus:true});
+            this.setState({zDepth:4});
         } else if(event.focusedElementId !== null){
             this.refs['card-' + this.props.index].getDOMNode().blur();
-            this.setState({zDepth:1, autofocus:false});
+            this.setState({zDepth:1});
         }
     },
 
@@ -132,6 +136,17 @@ let ColourCard = React.createClass({
             side = this.state.colour;
         }
         this.setState({flipped:flipped, side:side});
+    },
+
+    _adjustStateWithFocus:function(flipped){
+        let side = COLOURS.BG;
+        if(flipped){
+            side = this.state.colour;
+        }
+        setTimeout(function(){
+            this.refs['card-' + this.props.index].getDOMNode().focus();
+            this.setState({zDepth:4, flipped:flipped, side:side});
+        }.bind(this), 300);
     }
 });
 

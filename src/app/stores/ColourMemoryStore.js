@@ -7,6 +7,7 @@ let constants = require('../constants/ColourMemoryConstants');
 let ColourCardColours = constants.COLOURS;
 
 let ActionTypes = ColourMemoryConstants.ActionTypes;
+let RESTART_EVENT = 'restart';
 let WON_EVENT = 'won';
 let SCORE_EVENT = 'score';
 let FLIP_EVENT = 'flip';
@@ -55,12 +56,11 @@ function _processFlip(cardIndex, colour){
                 _correctFlips++;
                 _flippedCards.push(_previousCard);
                 _flippedCards.push(cardIndex);
+                ColourMemoryStore.emitScore();
 
                 if (_correctFlips == MAX_FLIPS) {
                     ColourMemoryStore.emitWon();
-                    //ColourMemoryActionCreators.restart();
                 } else {
-                    ColourMemoryStore.emitScore();
                     _previousCard = -1;
                 }
             } else {
@@ -69,7 +69,7 @@ function _processFlip(cardIndex, colour){
                 ColourMemoryStore.emitPenalty(_flippedCards);
             }
             _processing = false;
-        }, 1000);
+        }, 500);
     }
 }
 
@@ -104,6 +104,10 @@ function _reset(){
 
 var ColourMemoryStore = assign({}, EventEmitter.prototype, {
 
+    emitRestart: function () {
+        this.emit(RESTART_EVENT);
+    },
+
     emitWon: function () {
         this.emit(WON_EVENT);
     },
@@ -113,15 +117,26 @@ var ColourMemoryStore = assign({}, EventEmitter.prototype, {
     },
 
     emitScore: function () {
-        this.emit(SCORE_EVENT);
+        this.emit(SCORE_EVENT, {score: _score});
     },
 
     emitPenalty: function (flippedCards) {
-        this.emit(PENALTY_EVENT, {flippedCards: flippedCards});
+        this.emit(PENALTY_EVENT, {flippedCards: flippedCards, score: _score});
     },
 
     emitFocus: function (focusedElementId) {
         this.emit(FOCUS_EVENT, {focusedElementId: focusedElementId});
+    },
+
+    /**
+     * @param {function} callback
+     */
+    addRestartListener: function (callback) {
+        this.on(RESTART_EVENT, callback);
+    },
+
+    removeRestartListener: function (callback) {
+        this.removeListener(RESTART_EVENT, callback);
     },
 
     /**
@@ -192,6 +207,7 @@ ColourMemoryStore.dispatchToken = ColourMemoryDispatcher.register(function (acti
 
         case ActionTypes.RESTART:
             _reset();
+            ColourMemoryStore.emitRestart();
             break;
 
         case ActionTypes.INIT:

@@ -7,6 +7,8 @@ let ThemeManager = new mui.Styles.ThemeManager();
 let Colors = mui.Styles.Colors;
 let ColourCard = require('./ColourCard.react');
 let NewGameButton = require('./NewGameButton.react');
+let ScoreBox = require('./ScoreBox.react');
+let WonDialog = require('./WonDialog.react');
 let constants = require('../constants/ColourMemoryConstants');
 let ColourCardColours = constants.COLOURS;
 let ColourMemoryActionCreators = require('../actions/ColourMemoryActionCreators');
@@ -35,20 +37,21 @@ let ColourMemory = React.createClass({
             textAlign: 'center',
             height:"576px",
             width: "720px",
-            margin: 'auto'
+            margin: 'auto',
+            backgroundColor: Colors.lime50
             //'margin-right': 'auto'
             //paddingTop: '200px'
         };
 
         let groupLeftStyle = {
+            margin: '40px',
             float: 'left',
-            width: '75%'
+            width: '70%'
         };
 
         let groupRightStyle = {
             marginTop: '100px',
-            float: 'left',
-            width: '25%'
+            float: 'left'
         };
 
         let cardGroupStyle = {
@@ -58,6 +61,7 @@ let ColourMemory = React.createClass({
 
         return (
             <div style={containerStyle}>
+                <WonDialog />
                 <div style={groupLeftStyle}>
                     <div>
                         <div style={cardGroupStyle}>
@@ -87,6 +91,7 @@ let ColourMemory = React.createClass({
                     </div>
                 </div>
                 <div style={groupRightStyle}>
+                    <ScoreBox />
                     <NewGameButton tabindex={1} index={16}/>
                 </div>
             </div>

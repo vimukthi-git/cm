@@ -96,13 +96,6 @@ ColourCardStore.dispatchToken = ColourMemoryDispatcher.register(function (action
             _initStore();
             break;
 
-        case ActionTypes.RECEIVE_RAW_MESSAGES:
-            _addMessages(action.rawMessages);
-            ChatAppDispatcher.waitFor([ThreadStore.dispatchToken]);
-            _markAllInThreadRead(ThreadStore.getCurrentID());
-            MessageStore.emitChange();
-            break;
-
         default:
         // do nothing
     }
