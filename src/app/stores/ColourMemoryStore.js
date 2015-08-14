@@ -11,49 +11,95 @@ let WON_EVENT = 'won';
 let SCORE_EVENT = 'score';
 let FLIP_EVENT = 'flip';
 let PENALTY_EVENT = 'penalty';
+let FOCUS_EVENT = 'focus';
 let MAX_FLIPS = 8;
+let NEIGHBOUR_INDEXES = [
+    [null, null, 1, 4],
+    [0, null, 2, 5],
+    [1, null, 3, 6],
+    [2, null, 16, 7],
+    [null, 0, 5, 8],
+    [4, 1, 6, 9],
+    [5, 2, 7, 10],
+    [6, 3, 16, 11],
+    [null, 4, 9, 12],
+    [8, 5, 10, 13],
+    [9, 6, 11, 14],
+    [10, 7, 16, 15],
+    [null, 8, 13, null],
+    [12, 9, 14, null],
+    [13, 10, 15, null],
+    [14, 11, 16, null],
+    [3, null, null, null]
+];
 
-let score = 0;
-let previousCard = -1;
-let previousColour = "";
-let correctFlips = 0;
-let flippedCards = [];
+let _score = 0;
+let _previousCard = -1;
+let _previousColour = "";
+let _correctFlips = 0;
+let _flippedCards = [];
+let _processing = false;
+
 
 
 function _processFlip(cardIndex, colour){
     ColourMemoryStore.emitFlip(cardIndex);
-    setTimeout(function(){
-        if(previousCard == -1){
-            previousCard = cardIndex;
-            previousColour = colour;
-        } else {
-            if (previousColour == colour){
-                score++;
-                correctFlips++;
-                flippedCards.push(previousCard);
-                flippedCards.push(cardIndex);
+    if(_previousCard == -1){
+        _previousCard = cardIndex;
+        _previousColour = colour;
+    } else {
+        _processing = true;
+        setTimeout(function () {
+            if (_previousColour == colour) {
+                _score++;
+                _correctFlips++;
+                _flippedCards.push(_previousCard);
+                _flippedCards.push(cardIndex);
 
-                if(correctFlips == MAX_FLIPS){
+                if (_correctFlips == MAX_FLIPS) {
                     ColourMemoryStore.emitWon();
                     //ColourMemoryActionCreators.restart();
                 } else {
                     ColourMemoryStore.emitScore();
-                    previousCard = -1;
+                    _previousCard = -1;
                 }
             } else {
-                score--;
-                previousCard = -1;
-                ColourMemoryStore.emitPenalty(flippedCards);
+                _score--;
+                _previousCard = -1;
+                ColourMemoryStore.emitPenalty(_flippedCards);
             }
-        }
-    }, 1000);
+            _processing = false;
+        }, 1000);
+    }
+}
+
+function _processFocus(cardIndex, arrowKey){
+    switch(arrowKey) {
+        case "ArrowUp":
+            ColourMemoryStore.emitFocus(_getFocusedElement(cardIndex, 1));
+            break;
+        case "ArrowDown":
+            ColourMemoryStore.emitFocus(_getFocusedElement(cardIndex, 3));
+            break;
+        case "ArrowRight":
+            ColourMemoryStore.emitFocus(_getFocusedElement(cardIndex, 2));
+            break;
+        case "ArrowLeft":
+            ColourMemoryStore.emitFocus(_getFocusedElement(cardIndex, 0));
+            break;
+    }
+}
+
+function _getFocusedElement(blurIndex, focusDirection){
+    return NEIGHBOUR_INDEXES[blurIndex][focusDirection];
 }
 
 function _reset(){
-    score = 0;
-    previousCard = -1;
-    previousColour = "";
-    correctFlips = 0;
+    _score = 0;
+    _previousCard = -1;
+    _previousColour = "";
+    _correctFlips = 0;
+    _processing = false;
 }
 
 var ColourMemoryStore = assign({}, EventEmitter.prototype, {
@@ -72,6 +118,10 @@ var ColourMemoryStore = assign({}, EventEmitter.prototype, {
 
     emitPenalty: function (flippedCards) {
         this.emit(PENALTY_EVENT, {flippedCards: flippedCards});
+    },
+
+    emitFocus: function (focusedElementId) {
+        this.emit(FOCUS_EVENT, {focusedElementId: focusedElementId});
     },
 
     /**
@@ -118,12 +168,19 @@ var ColourMemoryStore = assign({}, EventEmitter.prototype, {
         this.removeListener(PENALTY_EVENT, callback);
     },
 
-    get: function (id) {
-        return _cards[id];
+    /**
+     * @param {function} callback
+     */
+    addFocusListener: function (callback) {
+        this.on(FOCUS_EVENT, callback);
     },
 
-    getAll: function () {
-        return _cards;
+    removeFocusListener: function (callback) {
+        this.removeListener(FOCUS_EVENT, callback);
+    },
+
+    isProcessing(){
+        return _processing;
     }
 });
 
@@ -141,7 +198,11 @@ ColourMemoryStore.dispatchToken = ColourMemoryDispatcher.register(function (acti
             break;
 
         case ActionTypes.CARD_FLIP:
-            _processFlip(action.cardIndex, action.colour);
+            !_processing? _processFlip(action.cardIndex, action.colour) : null;
+            break;
+
+        case ActionTypes.CARD_FOCUS:
+            !_processing? _processFocus(action.cardIndex, action.arrowKey) : null;
             break;
 
         default:

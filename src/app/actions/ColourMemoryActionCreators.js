@@ -23,6 +23,14 @@ module.exports = {
             cardIndex: cardIndex,
             colour: colour
         });
+    },
+
+    cardNavigate: function(cardIndex, arrowKey){
+        ColourMemoryDispatcher.dispatch({
+            type: ActionTypes.CARD_FOCUS,
+            cardIndex: cardIndex,
+            arrowKey: arrowKey
+        });
     }
 
 };

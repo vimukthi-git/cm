@@ -16,19 +16,23 @@ let ColourCard = React.createClass({
 
     getInitialState: function() {
         let model = ColourCardStore.get(this.props.index);
-        this.props.colour = model.colour;
-        let colour = COLOURS.BG;
+        let side = COLOURS.BG;
         if(model.flipped){
-            colour = this.props.colour;
+            side = model.colour;
         }
-        return {flipped:model.flipped, colour:colour};
+        let zDepth = 1;
+        if(this.props.autofocus){
+            zDepth = 4;
+        }
+        return {flipped:model.flipped, side:side, colour:model.colour, zDepth: zDepth,
+            autofocus:this.props.autofocus};
     },
 
     tick: function() {
         if(this.state.flipped){
-            this.state.colour = COLOURS.RED;
+            this.state.side = COLOURS.RED;
         } else {
-            this.state.colour = COLOURS.BG;
+            this.state.side = COLOURS.BG;
         }
         this.setState({flipped: !this.state.flipped});
     },
@@ -39,6 +43,10 @@ let ColourCard = React.createClass({
         ColourMemoryStore.addScoreListener(this._onScore);
         ColourMemoryStore.addWonListener(this._onWon);
         ColourMemoryStore.addFlipListener(this._onFlip);
+        ColourMemoryStore.addFocusListener(this._onFocus);
+        if(this.props.index === 0){
+            this._onFocus({focusedElementId: this.props.index});
+        }
     },
 
     componentWillUnmount: function() {
@@ -56,19 +64,35 @@ let ColourCard = React.createClass({
         };
 
         return (
-            <Paper zDepth={1} style={root} onClick={this._handleTouchTap}>
-                <img src={this.state.colour} />
+            <Paper ref={'card-' + this.props.index} tabIndex={this.props.tabindex} zDepth={this.state.zDepth} style={root}
+                   onClick={this._handleTouchTap}
+                   onKeyUp={this._handleKeyPress}>
+                <img src={this.state.side} />
             </Paper>
         );
     },
 
+    _handleKeyPress: function(e){
+        switch(e.key) {
+            case "Enter":
+                ColourMemoryActionCreators.cardFlip(this.props.index, this.state.colour);
+                break;
+            case "ArrowUp":
+            case "ArrowDown":
+            case "ArrowRight":
+            case "ArrowLeft":
+                ColourMemoryActionCreators.cardNavigate(this.props.index, e.key);
+                break;
+        }
+    },
+
     _handleTouchTap: function(){
-        ColourMemoryActionCreators.cardFlip(this.props.index, this.props.colour);
+        ColourMemoryActionCreators.cardFlip(this.props.index, this.state.colour);
     },
 
     _onChange: function(){
         let model = ColourCardStore.get(this.props.index);
-        this.props.colour = model.colour;
+        this.state.colour = model.colour;
         this._adjustState(model.flipped);
     },
 
@@ -92,12 +116,22 @@ let ColourCard = React.createClass({
         }
     },
 
-    _adjustState:function(flipped){
-        let colour = COLOURS.BG;
-        if(flipped){
-            colour = this.props.colour;
+    _onFocus: function(event){
+        if(event.focusedElementId === this.props.index){
+            this.refs['card-' + this.props.index].getDOMNode().focus();
+            this.setState({zDepth:4, autofocus:true});
+        } else if(event.focusedElementId !== null){
+            this.refs['card-' + this.props.index].getDOMNode().blur();
+            this.setState({zDepth:1, autofocus:false});
         }
-        this.setState({flipped:flipped, colour:colour});
+    },
+
+    _adjustState:function(flipped){
+        let side = COLOURS.BG;
+        if(flipped){
+            side = this.state.colour;
+        }
+        this.setState({flipped:flipped, side:side});
     }
 });
 

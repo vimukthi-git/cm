@@ -6,6 +6,7 @@ let RaisedButton = mui.RaisedButton;
 let ThemeManager = new mui.Styles.ThemeManager();
 let Colors = mui.Styles.Colors;
 let ColourCard = require('./ColourCard.react');
+let NewGameButton = require('./NewGameButton.react');
 let constants = require('../constants/ColourMemoryConstants');
 let ColourCardColours = constants.COLOURS;
 let ColourMemoryActionCreators = require('../actions/ColourMemoryActionCreators');
@@ -60,40 +61,36 @@ let ColourMemory = React.createClass({
                 <div style={groupLeftStyle}>
                     <div>
                         <div style={cardGroupStyle}>
-                            <ColourCard index={0}/>
-                            <ColourCard index={1}/>
-                            <ColourCard index={2}/>
-                            <ColourCard index={3}/>
+                            <ColourCard tabindex={3} index={0}/>
+                            <ColourCard tabindex={3} index={1}/>
+                            <ColourCard tabindex={3} index={2}/>
+                            <ColourCard tabindex={2} index={3}/>
                         </div>
                         <div style={cardGroupStyle}>
-                            <ColourCard index={4}/>
-                            <ColourCard index={5}/>
-                            <ColourCard index={6}/>
-                            <ColourCard index={7}/>
+                            <ColourCard tabindex={3} index={4}/>
+                            <ColourCard tabindex={3} index={5}/>
+                            <ColourCard tabindex={3} index={6}/>
+                            <ColourCard tabindex={2} index={7}/>
                         </div>
                         <div style={cardGroupStyle}>
-                            <ColourCard index={8}/>
-                            <ColourCard index={9}/>
-                            <ColourCard index={10}/>
-                            <ColourCard index={11}/>
+                            <ColourCard tabindex={3} index={8}/>
+                            <ColourCard tabindex={3} index={9}/>
+                            <ColourCard tabindex={3} index={10}/>
+                            <ColourCard tabindex={2} index={11}/>
                         </div>
                         <div style={cardGroupStyle}>
-                            <ColourCard index={12}/>
-                            <ColourCard index={13}/>
-                            <ColourCard index={14}/>
-                            <ColourCard index={15}/>
+                            <ColourCard tabindex={3} index={12}/>
+                            <ColourCard tabindex={3} index={13}/>
+                            <ColourCard tabindex={3} index={14}/>
+                            <ColourCard tabindex={2} index={15}/>
                         </div>
                     </div>
                 </div>
                 <div style={groupRightStyle}>
-                    <RaisedButton label="Restart" primary={true} onTouchTap={this._restart}/>
+                    <NewGameButton tabindex={1} index={16}/>
                 </div>
             </div>
         );
-    },
-
-    _restart() {
-        ColourMemoryActionCreators.restart();
     }
 
 });
