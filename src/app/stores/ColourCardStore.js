@@ -1,6 +1,5 @@
 let ColourMemoryDispatcher = require('../dispatcher/ColourMemoryDispatcher');
 let ColourMemoryConstants = require('../constants/ColourMemoryConstants');
-var ChatMessageUtils = require('../utils/ChatMessageUtils');
 let EventEmitter = require('events').EventEmitter;
 let assign = require('object-assign');
 let constants = require('../constants/ColourMemoryConstants');
@@ -10,12 +9,50 @@ let ActionTypes = ColourMemoryConstants.ActionTypes;
 let CHANGE_EVENT = 'change';
 
 let _cards = [];
+let _colors = [];
 let NUM_CARDS = 16;
+let NUM_COLOURS = 8;
+
+
+function _initStore(){
+    var colourArray = Object.keys(ColourCardColours);
+    for (var i = 1; i <= NUM_CARDS; i++) {
+        let index = 1;
+        if(i % NUM_COLOURS == 0){
+            index = NUM_COLOURS - 1;
+        } else {
+            index = (i % NUM_COLOURS) - 1;
+        }
+        _colors.push(ColourCardColours[colourArray[index]]);
+    }
+    _initCards();
+}
 
 function _initCards() {
+    _shuffle(_colors);
+    _cards = [];
     for (var i = 0; i < NUM_CARDS; i++) {
-        _cards.push({id: i, colour: ColourCardColours.BLUE, flipped: false});
+        _cards.push({id: i, colour: _colors[i], flipped: false});
     }
+}
+
+function _shuffle(array) {
+    var currentIndex = array.length, temporaryValue, randomIndex ;
+
+    // While there remain elements to shuffle...
+    while (0 !== currentIndex) {
+
+        // Pick a remaining element...
+        randomIndex = Math.floor(Math.random() * currentIndex);
+        currentIndex -= 1;
+
+        // And swap it with the current element.
+        temporaryValue = array[currentIndex];
+        array[currentIndex] = array[randomIndex];
+        array[randomIndex] = temporaryValue;
+    }
+
+    return array;
 }
 
 var ColourCardStore = assign({}, EventEmitter.prototype, {
@@ -41,33 +78,7 @@ var ColourCardStore = assign({}, EventEmitter.prototype, {
 
     getAll: function () {
         return _cards;
-    },
-
-    /**
-     * @param {string} threadID
-     */
-    getAllForThread: function (threadID) {
-        var threadMessages = [];
-        for (var id in _messages) {
-            if (_messages[id].threadID === threadID) {
-                threadMessages.push(_messages[id]);
-            }
-        }
-        threadMessages.sort(function (a, b) {
-            if (a.date < b.date) {
-                return -1;
-            } else if (a.date > b.date) {
-                return 1;
-            }
-            return 0;
-        });
-        return threadMessages;
-    },
-
-    getAllForCurrentThread: function () {
-        return this.getAllForThread(ThreadStore.getCurrentID());
     }
-
 });
 
 ColourCardStore.setMaxListeners(20);
@@ -82,16 +93,7 @@ ColourCardStore.dispatchToken = ColourMemoryDispatcher.register(function (action
             break;
 
         case ActionTypes.INIT:
-            _initCards();
-            break;
-
-        case ActionTypes.CREATE_MESSAGE:
-            var message = ChatMessageUtils.getCreatedMessageData(
-                action.text,
-                action.currentThreadID
-            );
-            _messages[message.id] = message;
-            MessageStore.emitChange();
+            _initStore();
             break;
 
         case ActionTypes.RECEIVE_RAW_MESSAGES:

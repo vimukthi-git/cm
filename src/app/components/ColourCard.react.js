@@ -4,8 +4,10 @@
 
 let React = require('react');
 let mui = require('material-ui');
+let ColourMemoryActionCreators = require('../actions/ColourMemoryActionCreators');
 let constants = require('../constants/ColourMemoryConstants');
-var ColourCardStore = require('../stores/ColourCardStore');
+let ColourCardStore = require('../stores/ColourCardStore');
+let ColourMemoryStore = require('../stores/ColourMemoryStore');
 let Paper = mui.Paper;
 
 let COLOURS = constants.COLOURS;
@@ -33,6 +35,10 @@ let ColourCard = React.createClass({
 
     componentDidMount: function() {
         ColourCardStore.addChangeListener(this._onChange);
+        ColourMemoryStore.addPenaltyListener(this._onPenalty);
+        ColourMemoryStore.addScoreListener(this._onScore);
+        ColourMemoryStore.addWonListener(this._onWon);
+        ColourMemoryStore.addFlipListener(this._onFlip);
     },
 
     componentWillUnmount: function() {
@@ -57,13 +63,33 @@ let ColourCard = React.createClass({
     },
 
     _handleTouchTap: function(){
-        this._adjustState(!this.state.flipped);
+        ColourMemoryActionCreators.cardFlip(this.props.index, this.props.colour);
     },
 
     _onChange: function(){
         let model = ColourCardStore.get(this.props.index);
         this.props.colour = model.colour;
         this._adjustState(model.flipped);
+    },
+
+    _onWon: function(){
+
+    },
+
+    _onFlip: function(event){
+        if(event.index === this.props.index){
+            this._adjustState(true);
+        }
+    },
+
+    _onScore: function(){
+
+    },
+
+    _onPenalty: function(event){
+        if(!~event.flippedCards.indexOf(this.props.index)){
+            this._adjustState(false);
+        }
     },
 
     _adjustState:function(flipped){

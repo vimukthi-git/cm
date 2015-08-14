@@ -15,6 +15,14 @@ module.exports = {
         ColourMemoryDispatcher.dispatch({
             type: ActionTypes.INIT
         });
+    },
+
+    cardFlip: function(cardIndex, colour){
+        ColourMemoryDispatcher.dispatch({
+            type: ActionTypes.CARD_FLIP,
+            cardIndex: cardIndex,
+            colour: colour
+        });
     }
 
 };

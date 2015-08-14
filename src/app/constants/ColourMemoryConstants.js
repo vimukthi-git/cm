@@ -7,7 +7,7 @@ module.exports = {
     ActionTypes: keyMirror({
         INIT: null,
         RESTART: null,
-        CARD_CLICK: null
+        CARD_FLIP: null
     }),
 
     IMG_PATH: IMG_PATH,
