@@ -29,6 +29,19 @@ let RankDialog = React.createClass({
 
 
     render() {
+        let scoreStyle = {
+            fontSize: '20px',
+            color: Colors.deepOrange400
+        };
+        let rankStyle = {
+            fontSize: '20px',
+            color: Colors.deepOrange400
+        };
+        let playersStyle = {
+            fontSize: '20px',
+            color: Colors.deepOrange400
+        };
+
         //Standard Actions
         let actions = [
             <FlatButton
@@ -46,7 +59,7 @@ let RankDialog = React.createClass({
                 onShow={this._onShow}
                 modal={true}
                 ref="RankDialog">
-                <h3>{this.state.msg}</h3>
+                <h3>You are now ranked <span style={rankStyle}>{this.state.rank + this._getPh(this.state.rank)}</span> with a score of <span style={scoreStyle}>{this.state.score}</span> among <span style={playersStyle}>{this.state.players}</span> players.</h3>
             </Dialog>
         );
     },
@@ -71,15 +84,34 @@ let RankDialog = React.createClass({
         ref._handleKeyboardFocus({}, false);
     },
 
+    _getPh: function (rank) {
+        let rankPh = '';
+        let rankSwitch = rank % 10;
+        switch (rankSwitch) {
+            case 1:
+                rankPh = 'st';
+                break;
+            case 2:
+                rankPh = 'nd';
+                break;
+            case 3:
+                rankPh = 'rd';
+                break;
+            default:
+                rankPh = 'th';
+                break;
+        }
+        return rankPh;
+    },
+
     _initDialog(event) {
         let score = event.rank.score;
         let rank = event.rank.rank;
         let players = event.rank.players;
-        let msg = "You are now ranked " + rank + " among "
-            + players + " players with a score of " + score + ".";
-        this.setState({score: score, rank: rank, players: players, msg: msg});
+        this.setState({score: score, rank: rank, players: players});
         this.refs.RankDialog.show();
     }
+
 
 });
 
