@@ -59,7 +59,7 @@ let RankDialog = React.createClass({
                 onShow={this._onShow}
                 modal={true}
                 ref="RankDialog">
-                <h3>You are now ranked <span style={rankStyle}>{this.state.rank + this._getPh(this.state.rank)}</span> with a score of <span style={scoreStyle}>{this.state.score}</span> among <span style={playersStyle}>{this.state.players}</span> players.</h3>
+                <h3>You are ranked <span style={rankStyle}>{this.state.rank + this._getPh(this.state.rank)}</span> with a score of <span style={scoreStyle}>{this.state.score}</span> among <span style={playersStyle}>{this.state.players}</span> players.</h3>
             </Dialog>
         );
     },
