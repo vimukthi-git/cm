@@ -1,3 +1,9 @@
+/**
+ * Created by vimukthib on 8/13/15.
+ * store for Score state according to Flux architecture
+ * https://facebook.github.io/flux/docs/overview.html#stores
+ */
+
 let ColourMemoryDispatcher = require('../dispatcher/ColourMemoryDispatcher');
 let ColourMemoryConstants = require('../constants/ColourMemoryConstants');
 let ColourMemoryStore = require('./ColourMemoryStore');
@@ -11,6 +17,17 @@ let SCORE_SAVED_EVENT = 'scored';
 let SCORE_SAVE_ERROR = 'score_error';
 let SHOW_RANK = 'show_rank';
 
+/**
+ *
+ * Private methods of the ScoreStore starts here
+ */
+
+/**
+ * Submit a new score to the score API and get the rank
+ * @param name
+ * @param email
+ * @private
+ */
 function _submitScore(name, email){
     let currentScore = ColourMemoryStore.getScore();
     let score = {name: name, email: email, score: currentScore};
@@ -29,6 +46,11 @@ function _submitScore(name, email){
         }
     });
 }
+
+/**
+ *
+ * public API of the ScoreStore starts here
+ */
 
 var ScoreStore = assign({}, EventEmitter.prototype, {
 
@@ -79,6 +101,11 @@ var ScoreStore = assign({}, EventEmitter.prototype, {
 });
 
 ScoreStore.setMaxListeners(20);
+
+
+/**
+ * Register for and handle app actions
+ */
 
 ScoreStore.dispatchToken = ColourMemoryDispatcher.register(function (action) {
 

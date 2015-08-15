@@ -1,3 +1,8 @@
+/**
+ * Created by vimukthib on 8/13/15.
+ * Constants for Colour Memory app
+ */
+
 let keyMirror = require('keymirror');
 
 let IMG_PATH = "www/images/";

@@ -1,5 +1,6 @@
 /**
  * Created by vimukthib on 8/13/15.
+ * ColourCard React component which represents a Colour card in the Colour Memory game board.
  */
 
 let React = require('react');

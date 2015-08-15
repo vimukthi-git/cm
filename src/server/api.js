@@ -1,8 +1,14 @@
+/**
+ * Created by vimukthib on 8/13/15.
+ */
+
 let express = require('express');
 let app = express();
 let router = express.Router();
 let bodyParser  = require('body-parser');
 let mongoose = require('mongoose');
+
+// connect to the db
 mongoose.connect('mongodb://localhost/colormemory');
 
 // Polyfill for Array.find
@@ -33,10 +39,19 @@ let Score = mongoose.model('Score', { name: String, email: String, score: Number
 
 app.use(bodyParser.json());
 app.use(express.static('public'));
+
+/**
+ * serve the index.html
+ */
 app.get('/', function(req, res) {
     res.sendfile('./public/www/index.html');
 });
 
+/**
+ * Score api which stores scores and returns
+ * current highest rank for the player.
+ *
+ */
 app.post('/score', function (req, res) {
     let score = new Score(req.body);
     score.save(function (err) {
@@ -54,6 +69,11 @@ app.post('/score', function (req, res) {
     });
 });
 
+/**
+ * Get rank for the particular player
+ * @param email
+ * @param callback
+ */
 function getRank(email, callback){
     Score.aggregate({$group: { _id: '$email', score: { $max: '$score' } } }, function(err, result){
         if (err) {

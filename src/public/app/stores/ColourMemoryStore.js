@@ -1,3 +1,9 @@
+/**
+ * Created by vimukthib on 8/13/15.
+ * store for ColourMemory game state according to Flux architecture
+ * https://facebook.github.io/flux/docs/overview.html#stores
+ */
+
 let ColourMemoryDispatcher = require('../dispatcher/ColourMemoryDispatcher');
 let ColourMemoryActionCreators = require('../actions/ColourMemoryActionCreators');
 let ColourMemoryConstants = require('../constants/ColourMemoryConstants');
@@ -40,8 +46,17 @@ let _correctFlips = 0;
 let _flippedCards = [];
 let _processing = false;
 
+/**
+ *
+ * Private methods of the ColourMemoryStore starts here
+ */
 
-
+/**
+ * Process a flip of a card and update score or penalty
+ * @param cardIndex
+ * @param colour
+ * @private
+ */
 function _processFlip(cardIndex, colour){
     ColourMemoryStore.emitFlip(cardIndex);
     if(_previousCard == -1){
@@ -72,6 +87,13 @@ function _processFlip(cardIndex, colour){
     }
 }
 
+/**
+ *
+ * Process when an arrow key is pressed on a game element and decide the next element to focus
+ * @param cardIndex keypressed element index
+ * @param arrowKey  arrow key that was pressed
+ * @private
+ */
 function _processFocus(cardIndex, arrowKey){
     switch(arrowKey) {
         case "ArrowUp":
@@ -89,6 +111,13 @@ function _processFocus(cardIndex, arrowKey){
     }
 }
 
+/**
+ * Get the next focused element index from the NEIGHBOUR_INDEXES array
+ * @param blurIndex
+ * @param focusDirection
+ * @returns {*}
+ * @private
+ */
 function _getFocusedElement(blurIndex, focusDirection){
     let neighbour = NEIGHBOUR_INDEXES[blurIndex][focusDirection];
     //if(~_flippedCards.indexOf(neighbour) && NEIGHBOUR_INDEXES[neighbour][focusDirection] === null
@@ -98,6 +127,10 @@ function _getFocusedElement(blurIndex, focusDirection){
     return neighbour;
 }
 
+/**
+ * reset state stored in the store
+ * @private
+ */
 function _reset(){
     _score = 0;
     _previousCard = -1;
@@ -106,6 +139,11 @@ function _reset(){
     _processing = false;
     _flippedCards = [];
 }
+
+/**
+ *
+ * public API of the ColourMemoryStore starts here
+ */
 
 var ColourMemoryStore = assign({}, EventEmitter.prototype, {
 
@@ -203,6 +241,9 @@ var ColourMemoryStore = assign({}, EventEmitter.prototype, {
         return _processing;
     },
 
+    /**
+     * get the current score
+     */
     getScore(){
         return _score;
     }
@@ -210,6 +251,11 @@ var ColourMemoryStore = assign({}, EventEmitter.prototype, {
 
 ColourMemoryStore.setMaxListeners(20);
 
+
+
+/**
+ * Register for and handle app actions
+ */
 ColourMemoryStore.dispatchToken = ColourMemoryDispatcher.register(function (action) {
 
     switch (action.type) {

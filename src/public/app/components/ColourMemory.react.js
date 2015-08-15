@@ -1,4 +1,7 @@
-/** In this file, we create a React component which incorporates components provided by material-ui */
+/**
+ * Created by vimukthib on 8/13/15.
+ * ColourMemory React component which represents the Colour Memory game board.
+ */
 
 let React = require('react');
 let mui = require('material-ui');

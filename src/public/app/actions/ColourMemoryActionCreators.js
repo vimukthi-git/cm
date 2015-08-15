@@ -1,7 +1,13 @@
-let ColourMemoryDispatcher = require('../dispatcher/ColourMemoryDispatcher');
-var ColourMemoryConstants = require('../constants/ColourMemoryConstants');
+/**
+ * Created by vimukthib.
+ * Set of action creators for Colour Memory app according to Flux architecture
+ * https://facebook.github.io/flux/docs/actions-and-the-dispatcher.html#content
+ */
 
-var ActionTypes = ColourMemoryConstants.ActionTypes;
+let ColourMemoryDispatcher = require('../dispatcher/ColourMemoryDispatcher');
+let ColourMemoryConstants = require('../constants/ColourMemoryConstants');
+
+let ActionTypes = ColourMemoryConstants.ActionTypes;
 
 module.exports = {
 

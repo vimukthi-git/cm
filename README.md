@@ -1,29 +1,62 @@
-# [Material-UI](http://callemall.github.io/material-ui/) - Example Project
+# Colour Memory Game
 
-This is an example project that uses [Material-UI](http://callemall.github.io/material-ui/).
+This is an app built based on Colour Memory game spec. This app uses following latest technologies/concepts for its implementation.
+
+- [Flux architecure](https://facebook.github.io/flux/docs/overview.html) - The main framework concept used by the app. 
+Flux architecture reduces the amount of data and event cross passing confusion by introducing a uni-directional data flow concept.
+
+- [React](https://facebook.github.io/react/index.html) - Is a composable view component framework used by facebook. It abstracts browser 
+DOM with a virtual DOM helping to do all kinds of optimizations.
+ 
+- [Material-UI](http://material-ui.com/) - A UI framework for React inspired by Googles material design ui principles.
+
+- [ECMAScript 2015](http://www.ecma-international.org/ecma-262/6.0/) - Latest release of JS specification which introduces lot of new functionality.
+This app uses [Babel](https://babeljs.io/) for ES6 compilation.
+
+- [Browserify](http://browserify.org/) - Browserify allows the use of NPM for depandancy management of clientside JS apps.
+ 
+- [Gulp](http://gulpjs.com/) - Build system.
+
+- [NodeJS](https://nodejs.org/) - Server side enviroment.
+
+- [Express](http://expressjs.com/) - Static server and REST API framework for the app.
 
 ## Installation
-After cloning the repository, install dependencies:
+After cloning the git repository or untaring the tar file, install dependencies:
+
 ```
-cd <project folder>/material-ui/examples/browserify-gulp-example
+cd <project folder>
+```
+
+```
 npm install
 ```
 
-Now you can run your local server:
+Note - Before following step install gulp in your machine if not already installed with,
 ```
-npm start
+sudo npm install gulp -g
 ```
-#Description of [Gulp](https://github.com/gulpjs/gulp) Plugins
 
+Then build app:
 
-##[browserify](https://github.com/substack/node-browserify)
-Browsers do not allow us to use the require method from Node.js. With browserify, we can implement dependency management on the browser. It also will bundle the code into one file in an efficient way to not repeat dependiencies that are used more than once.
+```
+gulp build
+```
 
-##[browserSync](http://www.browsersync.io/)
-When developing and testing the website, browserSync is a powerful tool that will rebuild and refresh the webpage so you can see the changes you make as you are working.
+Now run the server with,
 
-##markup
-Copies all of the files from /src/www to the build folder.
+```
+cd build
+```
 
-##[gulp_starter](https://github.com/greypants/gulp-starter)
-A useful repository that explains how many of gulp's features work and contains an example project to get familiar with it. We use this example to construct our own project.
+```
+node server.js
+```
+
+Then visit
+```
+http://localhost:5000/
+```
+
+Now enjoy a Colour Memory game !! :)
+

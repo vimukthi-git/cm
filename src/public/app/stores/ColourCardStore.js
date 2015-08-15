@@ -1,3 +1,9 @@
+/**
+ * Created by vimukthib.
+ * store for ColourCard state according to Flux architecture
+ * https://facebook.github.io/flux/docs/overview.html#stores
+ */
+
 let ColourMemoryDispatcher = require('../dispatcher/ColourMemoryDispatcher');
 let ColourMemoryConstants = require('../constants/ColourMemoryConstants');
 let EventEmitter = require('events').EventEmitter;
@@ -12,7 +18,10 @@ let _colors = [];
 let NUM_CARDS = 16;
 let NUM_COLOURS = 8;
 
-
+/**
+ * initialize the store
+ * @private
+ */
 function _initStore(){
     var colourArray = Object.keys(ColourCardColours);
     for (var i = 1; i <= NUM_CARDS; i++) {
@@ -27,6 +36,10 @@ function _initStore(){
     _initCards();
 }
 
+/**
+ * initialize the set of cards
+ * @private
+ */
 function _initCards() {
     _shuffle(_colors);
     _cards = [];
@@ -35,6 +48,13 @@ function _initCards() {
     }
 }
 
+/**
+ * Shuffle the given array with a random order
+ * used to generate random game board colors for each new round
+ * @param array
+ * @returns {*}
+ * @private
+ */
 function _shuffle(array) {
     var currentIndex = array.length, temporaryValue, randomIndex ;
 
@@ -53,6 +73,12 @@ function _shuffle(array) {
 
     return array;
 }
+
+
+/**
+ *
+ * public API of the ColourMemoryStore starts here
+ */
 
 var ColourCardStore = assign({}, EventEmitter.prototype, {
 
@@ -81,6 +107,12 @@ var ColourCardStore = assign({}, EventEmitter.prototype, {
 });
 
 ColourCardStore.setMaxListeners(20);
+
+
+
+/**
+ * Register for and handle app actions
+ */
 
 ColourCardStore.dispatchToken = ColourMemoryDispatcher.register(function (action) {
 

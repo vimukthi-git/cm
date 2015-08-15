@@ -1,3 +1,8 @@
+/**
+ * Created by vimukthib on 8/13/15.
+ * WonDialog React component which represents the winning dialog in the Colour Memory game board.
+ */
+
 let React = require('react');
 let mui = require('material-ui');
 let Colors = mui.Styles.Colors;
