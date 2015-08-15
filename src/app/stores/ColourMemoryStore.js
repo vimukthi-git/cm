@@ -66,7 +66,7 @@ function _processFlip(cardIndex, colour){
             } else {
                 _score--;
                 _previousCard = -1;
-                ColourMemoryStore.emitPenalty(_flippedCards);
+                ColourMemoryStore.emitPenalty();
             }
             _processing = false;
         }, 500);
@@ -76,22 +76,27 @@ function _processFlip(cardIndex, colour){
 function _processFocus(cardIndex, arrowKey){
     switch(arrowKey) {
         case "ArrowUp":
-            ColourMemoryStore.emitFocus(_getFocusedElement(cardIndex, 1));
+            ColourMemoryStore.emitFocus(_getFocusedElement(cardIndex, 1), arrowKey);
             break;
         case "ArrowDown":
-            ColourMemoryStore.emitFocus(_getFocusedElement(cardIndex, 3));
+            ColourMemoryStore.emitFocus(_getFocusedElement(cardIndex, 3), arrowKey);
             break;
         case "ArrowRight":
-            ColourMemoryStore.emitFocus(_getFocusedElement(cardIndex, 2));
+            ColourMemoryStore.emitFocus(_getFocusedElement(cardIndex, 2), arrowKey);
             break;
         case "ArrowLeft":
-            ColourMemoryStore.emitFocus(_getFocusedElement(cardIndex, 0));
+            ColourMemoryStore.emitFocus(_getFocusedElement(cardIndex, 0), arrowKey);
             break;
     }
 }
 
 function _getFocusedElement(blurIndex, focusDirection){
-    return NEIGHBOUR_INDEXES[blurIndex][focusDirection];
+    let neighbour = NEIGHBOUR_INDEXES[blurIndex][focusDirection];
+    //if(~_flippedCards.indexOf(neighbour) && NEIGHBOUR_INDEXES[neighbour][focusDirection] === null
+    //    || (~_flippedCards.indexOf(neighbour) && ~_flippedCards.indexOf(NEIGHBOUR_INDEXES[neighbour][focusDirection]))){
+    //    return blurIndex;
+    //}
+    return neighbour;
 }
 
 function _reset(){
@@ -100,6 +105,7 @@ function _reset(){
     _previousColour = "";
     _correctFlips = 0;
     _processing = false;
+    _flippedCards = [];
 }
 
 var ColourMemoryStore = assign({}, EventEmitter.prototype, {
@@ -117,15 +123,15 @@ var ColourMemoryStore = assign({}, EventEmitter.prototype, {
     },
 
     emitScore: function () {
-        this.emit(SCORE_EVENT, {score: _score});
+        this.emit(SCORE_EVENT, {flippedCards: _flippedCards, score: _score});
     },
 
-    emitPenalty: function (flippedCards) {
-        this.emit(PENALTY_EVENT, {flippedCards: flippedCards, score: _score});
+    emitPenalty: function () {
+        this.emit(PENALTY_EVENT, {flippedCards: _flippedCards, score: _score});
     },
 
-    emitFocus: function (focusedElementId) {
-        this.emit(FOCUS_EVENT, {focusedElementId: focusedElementId});
+    emitFocus: function (focusedElementId, arrowKey) {
+        this.emit(FOCUS_EVENT, {focusedElementId: focusedElementId, key: arrowKey});
     },
 
     /**

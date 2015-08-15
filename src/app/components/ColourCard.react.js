@@ -24,7 +24,7 @@ let ColourCard = React.createClass({
         if(this.props.autofocus){
             zDepth = 4;
         }
-        return {flipped:model.flipped, side:side, colour:model.colour, zDepth: zDepth};
+        return {flipped:model.flipped, side:side, colour:model.colour, zDepth: zDepth, disabled: false};
     },
 
     tick: function() {
@@ -74,7 +74,7 @@ let ColourCard = React.createClass({
     _handleKeyPress: function(e){
         switch(e.key) {
             case "Enter":
-                ColourMemoryActionCreators.cardFlip(this.props.index, this.state.colour);
+                this._flip();
                 break;
             case "ArrowUp":
             case "ArrowDown":
@@ -85,8 +85,14 @@ let ColourCard = React.createClass({
         }
     },
 
+    _flip: function(){
+        if(!this.state.disabled){
+            ColourMemoryActionCreators.cardFlip(this.props.index, this.state.colour);
+        }
+    },
+
     _handleTouchTap: function(){
-        ColourMemoryActionCreators.cardFlip(this.props.index, this.state.colour);
+        this._flip();
     },
 
     _onChange: function(){
@@ -105,22 +111,29 @@ let ColourCard = React.createClass({
     },
 
     _onFlip: function(event){
-        if(event.index === this.props.index){
+        if(event.index === this.props.index && !this.state.disabled){
             this._adjustState(true);
         }
     },
 
-    _onScore: function(){
-
+    _onScore: function(event){
+        if(~event.flippedCards.indexOf(this.props.index) && !this.state.disabled){
+            this._disable();
+        }
     },
 
     _onPenalty: function(event){
-        if(!~event.flippedCards.indexOf(this.props.index)){
+        if(!~event.flippedCards.indexOf(this.props.index) && !this.state.disabled){
             this._adjustState(false);
         }
     },
 
     _onFocus: function(event){
+        //if(event.focusedElementId === this.props.index && this.state.disabled){
+        //    setTimeout(function(){
+        //        this._handleKeyPress(event);
+        //    }.bind(this), 30);
+        //} else
         if(event.focusedElementId === this.props.index){
             this.refs['card-' + this.props.index].getDOMNode().focus();
             this.setState({zDepth:4});
@@ -130,12 +143,16 @@ let ColourCard = React.createClass({
         }
     },
 
+    _disable: function(){
+        this.setState({zDepth:0, flipped:true, side:COLOURS.DOLLAR, disabled: true});
+    },
+
     _adjustState:function(flipped){
         let side = COLOURS.BG;
         if(flipped){
             side = this.state.colour;
         }
-        this.setState({flipped:flipped, side:side});
+        this.setState({flipped:flipped, side:side, disabled: false});
     },
 
     _adjustStateWithFocus:function(flipped){
@@ -145,7 +162,7 @@ let ColourCard = React.createClass({
         }
         setTimeout(function(){
             this.refs['card-' + this.props.index].getDOMNode().focus();
-            this.setState({zDepth:4, flipped:flipped, side:side});
+            this.setState({zDepth:4, flipped:flipped, side:side, disabled: false});
         }.bind(this), 300);
     }
 });

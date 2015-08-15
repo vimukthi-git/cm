@@ -22,7 +22,8 @@ module.exports = {
         DEEP_BLUE: IMG_PATH + "colour6.gif",
         MAGENTA: IMG_PATH + "colour7.gif",
         ORANGE: IMG_PATH + "colour8.gif",
-        BG: IMG_PATH + "card_bg.gif"
+        BG: IMG_PATH + "card_bg.gif",
+        DOLLAR: IMG_PATH + "dollar.gif"
     }
 
 };
