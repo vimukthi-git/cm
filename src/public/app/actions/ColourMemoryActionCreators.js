@@ -11,6 +11,21 @@ module.exports = {
         });
     },
 
+    showRank: function(rank){
+        ColourMemoryDispatcher.dispatch({
+            type: ActionTypes.SHOW_RANK,
+            rank: rank
+        });
+    },
+
+    submitScore: function (name, email) {
+        ColourMemoryDispatcher.dispatch({
+            type: ActionTypes.SUBMIT_SCORE,
+            name: name,
+            email: email
+        });
+    },
+
     init: function(){
         ColourMemoryDispatcher.dispatch({
             type: ActionTypes.INIT

@@ -1,22 +1,26 @@
 var dest = './build/public',
+markupdest = './build/public/www',
 src = './src/public',
 mui = './node_modules/material-ui/src';
 
 module.exports = {
+    babelify: {
+        src: src + '/server/**/*.js'
+    },
     browserSync: {
-        //proxy: "http://localhost:5000",
-        server: {
-            // We're serving the src folder as well
-            // for sass sourcemap linking
-            baseDir: [dest, src]
-        },
+        proxy: "http://localhost:5000",
+        //server: {
+        //    // We're serving the src folder as well
+        //    // for sass sourcemap linking
+        //    baseDir: [markupdest, src]
+        //},
         files: [
             dest + '/**'
         ]
     },
     markup: {
         src: src + "/www/**",
-        dest: dest
+        dest: markupdest
     },
     browserify: {
         // Enable source maps

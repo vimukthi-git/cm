@@ -7,8 +7,10 @@ module.exports = {
     ActionTypes: keyMirror({
         INIT: null,
         RESTART: null,
+        SHOW_RANK: null,
         CARD_FLIP: null,
-        CARD_FOCUS: null
+        CARD_FOCUS: null,
+        SUBMIT_SCORE: null
     }),
 
     IMG_PATH: IMG_PATH,
@@ -26,6 +28,8 @@ module.exports = {
         DOLLAR: IMG_PATH + "dollar.gif"
     },
 
-    LOGO_PATH: IMG_PATH + "logo.png"
+    LOGO_PATH: IMG_PATH + "logo.png",
+
+    SCORE_API: 'score'
 
 };

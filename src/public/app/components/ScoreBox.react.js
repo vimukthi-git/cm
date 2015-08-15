@@ -25,7 +25,7 @@ let ScoreBox = React.createClass({
         let style = {
             marginTop: '10px',
             marginBottom: '50px',
-            padding: '10px',
+            padding: '20px',
             textAlign: 'center'
         };
         return (

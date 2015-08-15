@@ -8,16 +8,19 @@ let constants = require('../constants/ColourMemoryConstants');
 let ColourCardColours = constants.COLOURS;
 let ColourMemoryActionCreators = require('../actions/ColourMemoryActionCreators');
 let ColourMemoryStore = require('../stores/ColourMemoryStore');
+let ScoreStore = require('../stores/ScoreStore');
 
 let WonDialog = React.createClass({
 
     getInitialState: function() {
-        return {displayed:false};
+        return {msg:""};
     },
 
     componentDidMount: function() {
         ColourMemoryStore.addWonListener(this._initDialog);
         //ColourMemoryStore.addFlipListener(this._initDialog);
+        ScoreStore.addScoreSavedListener(this._scoreSaved);
+        ScoreStore.addScoreSaveErrorListener(this._scoreSaveError);
     },
 
 
@@ -40,13 +43,13 @@ let WonDialog = React.createClass({
 
         return (
             <Dialog
-                title="You Won !!!"
+                title="Congratulations! You Won !"
                 actions={actions}
                 actionFocus="submit"
                 onShow={this._onShow}
                 modal={true}
                 ref="wondialog">
-                <h3>Let's add you to the Leaderboard. Please enter your details..</h3>
+                <h3>{this.state.msg}</h3>
 
                 <TextField
                     hintText="Enter your name"
@@ -65,16 +68,51 @@ let WonDialog = React.createClass({
         );
     },
 
+    _scoreSaved: function(event){
+        this.refs.wondialog.dismiss();
+        ColourMemoryActionCreators.showRank(event.rank);
+    },
+
+    _scoreSaveError: function(){
+        this._setMsg("We are having trouble with the score server..");
+    },
+
+    _inputalidationError: function(){
+        this._butttonBlur(this.refs.submit);
+        this._setMsg("Please double check name and email you entered..");
+    },
+
     _onDialogCancel: function(event){
         this.refs.wondialog.dismiss();
         ColourMemoryActionCreators.restart();
     },
 
     _onDialogSubmit: function(event){
-        this.setState({score: event.score});
+        let name = this.refs.name.getValue();
+        let email = this.refs.email.getValue();
+
+        if(this._validateName(name) && this._validateEmail(email)) {
+            ColourMemoryActionCreators.submitScore(name, email);
+        } else {
+            this._inputalidationError();
+        }
     },
 
-    _onShow() {
+    _validateName: function(name) {
+        return name !== null || name !== '' || name !== undefined;
+    },
+
+    _validateEmail: function(email) {
+        var re = /^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/i;
+        return re.test(email);
+    },
+
+    _onShow: function() {
+        this._setMsg("You scored  "+ this.state.score + " . Please enter your details for the Leaderboard..");
+    },
+
+    _setMsg: function(msg){
+        this.setState({msg: msg});
         this.refs.name.focus();
     },
 
@@ -118,7 +156,6 @@ let WonDialog = React.createClass({
             case "ArrowUp":
                 this.refs.name.focus();
                 break;
-            case "ArrowRight":
             case "ArrowDown":
                 this._butttonFocus(this.refs.try);
                 break;
@@ -135,7 +172,8 @@ let WonDialog = React.createClass({
         ref._handleKeyboardFocus({}, false);
     },
 
-    _initDialog() {
+    _initDialog(event) {
+        this.state.score = event.score;
         this.refs.wondialog.show();
     }
 

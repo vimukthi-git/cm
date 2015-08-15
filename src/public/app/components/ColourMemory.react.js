@@ -5,11 +5,12 @@ let mui = require('material-ui');
 let RaisedButton = mui.RaisedButton;
 let ThemeManager = new mui.Styles.ThemeManager();
 let Colors = mui.Styles.Colors;
-let ColourCard = require('./ColourCard.react.js');
-let NewGameButton = require('./NewGameButton.react.js');
-let ScoreBox = require('./ScoreBox.react.js');
-let Logo = require('./Logo.react.js');
-let WonDialog = require('./WonDialog.react.js');
+let ColourCard = require('./ColourCard.react');
+let NewGameButton = require('./NewGameButton.react');
+let ScoreBox = require('./ScoreBox.react');
+let Logo = require('./Logo.react');
+let WonDialog = require('./WonDialog.react');
+let RankDialog = require('./RankDialog.react');
 let constants = require('../constants/ColourMemoryConstants');
 let ColourCardColours = constants.COLOURS;
 let ColourMemoryActionCreators = require('../actions/ColourMemoryActionCreators');
@@ -63,6 +64,7 @@ let ColourMemory = React.createClass({
         return (
             <div style={containerStyle}>
                 <WonDialog />
+                <RankDialog />
                 <div style={groupLeftStyle}>
                     <div>
                         <div style={cardGroupStyle}>

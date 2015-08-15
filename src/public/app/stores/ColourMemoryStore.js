@@ -114,7 +114,7 @@ var ColourMemoryStore = assign({}, EventEmitter.prototype, {
     },
 
     emitWon: function () {
-        this.emit(WON_EVENT);
+        this.emit(WON_EVENT, {score: _score});
     },
 
     emitFlip: function (index) {
@@ -201,6 +201,10 @@ var ColourMemoryStore = assign({}, EventEmitter.prototype, {
 
     isProcessing(){
         return _processing;
+    },
+
+    getScore(){
+        return _score;
     }
 });
 
