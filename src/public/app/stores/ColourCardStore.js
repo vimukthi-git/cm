@@ -2,8 +2,7 @@ let ColourMemoryDispatcher = require('../dispatcher/ColourMemoryDispatcher');
 let ColourMemoryConstants = require('../constants/ColourMemoryConstants');
 let EventEmitter = require('events').EventEmitter;
 let assign = require('object-assign');
-let constants = require('../constants/ColourMemoryConstants');
-let ColourCardColours = constants.COLOURS;
+let ColourCardColours = ColourMemoryConstants.COLOURS;
 
 let ActionTypes = ColourMemoryConstants.ActionTypes;
 let CHANGE_EVENT = 'change';

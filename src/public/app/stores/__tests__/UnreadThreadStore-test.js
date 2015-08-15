@@ -21,7 +21,7 @@ describe('UnreadThreadStore', function() {
 
   beforeEach(function() {
     ChatAppDispatcher = require('../../dispatcher/ChatAppDispatcher');
-    UnreadThreadStore = require('../UnreadThreadStore');
+    UnreadThreadStore = require('stores/UnreadThreadStore');
     callback = ChatAppDispatcher.register.mock.calls[0][0];
   });
 
@@ -30,7 +30,7 @@ describe('UnreadThreadStore', function() {
   });
 
   it('provides the unread thread count', function() {
-    var ThreadStore = require('../ThreadStore');
+    var ThreadStore = require('stores/ThreadStore');
     ThreadStore.getAll.mockReturnValueOnce(
       {
         foo: {lastMessage: {isRead: false}},

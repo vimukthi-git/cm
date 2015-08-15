@@ -3,8 +3,7 @@ let ColourMemoryActionCreators = require('../actions/ColourMemoryActionCreators'
 let ColourMemoryConstants = require('../constants/ColourMemoryConstants');
 let EventEmitter = require('events').EventEmitter;
 let assign = require('object-assign');
-let constants = require('../constants/ColourMemoryConstants');
-let ColourCardColours = constants.COLOURS;
+let ColourCardColours = ColourMemoryConstants.COLOURS;
 
 let ActionTypes = ColourMemoryConstants.ActionTypes;
 let RESTART_EVENT = 'restart';
