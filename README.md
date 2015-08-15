@@ -73,4 +73,6 @@ Now enjoy a Colour Memory game !! :)
 - src/public/www - html, CSS and image files
 - src/server - server side logic
 
+Serverside entry point - src/api.js
 
+Clientside JS entry point - src/public/app/app.js

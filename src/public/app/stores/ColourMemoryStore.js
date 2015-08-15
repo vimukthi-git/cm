@@ -83,7 +83,7 @@ function _processFlip(cardIndex, colour){
                 ColourMemoryStore.emitPenalty();
             }
             _processing = false;
-        }, 500);
+        }, 800);
     }
 }
 
