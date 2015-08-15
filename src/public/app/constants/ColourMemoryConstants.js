@@ -24,6 +24,8 @@ module.exports = {
         ORANGE: IMG_PATH + "colour8.gif",
         BG: IMG_PATH + "card_bg.gif",
         DOLLAR: IMG_PATH + "dollar.gif"
-    }
+    },
+
+    LOGO_PATH: IMG_PATH + "logo.png"
 
 };

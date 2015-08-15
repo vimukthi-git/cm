@@ -8,6 +8,7 @@ let Colors = mui.Styles.Colors;
 let ColourCard = require('./ColourCard.react.js');
 let NewGameButton = require('./NewGameButton.react.js');
 let ScoreBox = require('./ScoreBox.react.js');
+let Logo = require('./Logo.react.js');
 let WonDialog = require('./WonDialog.react.js');
 let constants = require('../constants/ColourMemoryConstants');
 let ColourCardColours = constants.COLOURS;
@@ -46,11 +47,11 @@ let ColourMemory = React.createClass({
         let groupLeftStyle = {
             margin: '40px',
             float: 'left',
-            width: '70%'
+            width: '65%'
         };
 
         let groupRightStyle = {
-            marginTop: '100px',
+            marginTop: '50px',
             float: 'left'
         };
 
@@ -91,6 +92,7 @@ let ColourMemory = React.createClass({
                     </div>
                 </div>
                 <div style={groupRightStyle}>
+                    <Logo />
                     <ScoreBox />
                     <NewGameButton tabindex={1} index={16}/>
                 </div>

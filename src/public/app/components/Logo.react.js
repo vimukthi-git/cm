@@ -9,40 +9,23 @@ let ColourCardColours = constants.COLOURS;
 let ColourMemoryActionCreators = require('../actions/ColourMemoryActionCreators');
 let ColourMemoryStore = require('../stores/ColourMemoryStore');
 
-let ScoreBox = React.createClass({
-
-    getInitialState: function() {
-        return {score:0};
-    },
+let Logo = React.createClass({
 
     componentDidMount: function() {
-        ColourMemoryStore.addScoreListener(this._onScoreChange);
-        ColourMemoryStore.addPenaltyListener(this._onScoreChange);
-        ColourMemoryStore.addRestartListener(this._resetScore);
     },
 
     render() {
         let style = {
             marginTop: '10px',
             marginBottom: '50px',
-            padding: '10px',
-            textAlign: 'center'
+            width: '120px',
+            content: 'url(' + constants.LOGO_PATH + ')'
         };
         return (
-            <div style={style} ref="score">
-                <h2>Score</h2>
-                <h1>{this.state.score}</h1>
+            <div style={style}>
             </div>
         );
-    },
-
-    _onScoreChange: function(event){
-        this.setState({score: event.score});
-    },
-
-    _resetScore: function(){
-        this.setState({score: 0});
     }
 });
 
-module.exports = ScoreBox;
+module.exports = Logo;
