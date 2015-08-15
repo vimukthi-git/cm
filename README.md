@@ -60,3 +60,17 @@ http://localhost:5000/
 
 Now enjoy a Colour Memory game !! :)
 
+## Source Directory Structure
+
+- src - main source directory
+- src/public - public files including JS and HTML
+- src/public/app - App clientside JS files
+- src/public/app/actions - Flux action creators
+- src/public/app/components - React components
+- src/public/app/constants - App constants
+- src/public/app/dispatcher - Flux dispatchers
+- src/public/app/stores - Flux stores
+- src/public/www - html, CSS and image files
+- src/server - server side logic
+
+

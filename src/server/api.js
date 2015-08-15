@@ -3,13 +3,12 @@
  */
 
 let express = require('express');
+let cluster = require('cluster');
+var numCPUs = require('os').cpus().length;
 let app = express();
 let router = express.Router();
 let bodyParser  = require('body-parser');
 let mongoose = require('mongoose');
-
-// connect to the db
-mongoose.connect('mongodb://localhost/colormemory');
 
 // Polyfill for Array.find
 if (!Array.prototype.find) {
@@ -35,62 +34,78 @@ if (!Array.prototype.find) {
     };
 }
 
-let Score = mongoose.model('Score', { name: String, email: String, score: Number });
+// initiate a cluster
+if (cluster.isMaster) {
+    // Fork workers.
+    for (var i = 0; i < numCPUs; i++) {
+        cluster.fork();
+        console.log('worker ' + i + ' started');
+    }
 
-app.use(bodyParser.json());
-app.use(express.static('public'));
-
-/**
- * serve the index.html
- */
-app.get('/', function(req, res) {
-    res.sendfile('./public/www/index.html');
-});
-
-/**
- * Score api which stores scores and returns
- * current highest rank for the player.
- *
- */
-app.post('/score', function (req, res) {
-    let score = new Score(req.body);
-    score.save(function (err) {
-        if (err) {
-            res.status(500).json({error: err});
-        } else{
-            let rank = getRank(score.email, function(err, rank){
-                if (err) {
-                    res.status(500).json({error: err});
-                } else {
-                    res.status(200).json(rank);
-                }
-            });
-        }
+    cluster.on('exit', function(worker, code, signal) {
+        console.log('worker ' + worker.process.pid + ' died');
     });
-});
+} else {
+    // connect to the db
+    mongoose.connect('mongodb://localhost/colormemory');
+    let Score = mongoose.model('Score', { name: String, email: String, score: Number });
 
-/**
- * Get rank for the particular player
- * @param email
- * @param callback
- */
-function getRank(email, callback){
-    Score.aggregate({$group: { _id: '$email', score: { $max: '$score' } } }, function(err, result){
-        if (err) {
-            callback(err);
-        } else {
-            let players = result.length;
-            result.sort(function(a, b){
-                return b.score - a.score;
-            });
-            var index = result.find(function(element, index, array){
-                return element._id === email;
-            });
-            let score = result[index].score;
-            let rank = index + 1;
-            callback(null, {rank:rank, score:score, players: players});
-        }
+    app.use(bodyParser.json());
+    app.use(express.static('public'));
+
+    /**
+     * serve the index.html
+     */
+    app.get('/', function(req, res) {
+        res.sendfile('./public/www/index.html');
     });
+
+    /**
+     * Score api which stores scores and returns
+     * current highest rank for the player.
+     *
+     */
+    app.post('/score', function (req, res) {
+        let score = new Score(req.body);
+        score.save(function (err) {
+            if (err) {
+                res.status(500).json({error: err});
+            } else{
+                let rank = getRank(score.email, function(err, rank){
+                    if (err) {
+                        res.status(500).json({error: err});
+                    } else {
+                        res.status(200).json(rank);
+                    }
+                });
+            }
+        });
+    });
+
+    /**
+     * Get rank for the particular player
+     * @param email
+     * @param callback
+     */
+    function getRank(email, callback){
+        Score.aggregate({$group: { _id: '$email', score: { $max: '$score' } } }, function(err, result){
+            if (err) {
+                callback(err);
+            } else {
+                let players = result.length;
+                result.sort(function(a, b){
+                    return b.score - a.score;
+                });
+                var index = result.find(function(element, index, array){
+                    return element._id === email;
+                });
+                let score = result[index].score;
+                let rank = index + 1;
+                callback(null, {rank:rank, score:score, players: players});
+            }
+        });
+    }
+
+    app.listen(5000);
 }
 
-app.listen(5000);
