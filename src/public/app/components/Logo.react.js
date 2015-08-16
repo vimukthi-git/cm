@@ -22,7 +22,9 @@ let Logo = React.createClass({
             marginTop: '10px',
             marginBottom: '50px',
             width: '120px',
-            content: 'url(' + constants.LOGO_PATH + ')'
+            height: '48px',
+            background: 'url(' + constants.LOGO_PATH + ')',
+            backgroundSize: '120px !important'
         };
         return (
             <div style={style}>
