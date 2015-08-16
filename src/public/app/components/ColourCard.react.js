@@ -87,7 +87,7 @@ let ColourCard = React.createClass({
     },
 
     _flip: function(){
-        if(!this.state.disabled){
+        if(!this.state.disabled && this.state.side == COLOURS.BG){
             ColourMemoryActionCreators.cardFlip(this.props.index, this.state.colour);
         }
     },
