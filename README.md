@@ -21,6 +21,8 @@ This app uses [Babel](https://babeljs.io/) for ES6 compilation.
 
 - [Express](http://expressjs.com/) - Static server and REST API framework for the app.
 
+- [Mongodb](https://www.mongodb.org) - No SQL database.
+
 ## Installation
 After cloning the git repository or untaring the tar file, install dependencies:
 
@@ -42,6 +44,8 @@ Then build app:
 ```
 gulp build
 ```
+
+Install mongodb locally if it isn't installed locally.
 
 Now run the server with,
 
